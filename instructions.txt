@@ -1,0 +1,8 @@
+- apio init -b upduino 31 -p [PATH]
+- create: "up5k.pcf", write in constraints
+- write verilog
+- apio verify
+- apio build
+- apio upload
+
+if upload doesn't work, add upduino31 to boards.json
