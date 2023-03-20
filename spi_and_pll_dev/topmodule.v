@@ -49,14 +49,14 @@ module top
         .LOCK(PLL_LOCK)
     );
 
-    reg cks8;
+    reg [3:0]cks8;
 
-    assign gpio_31 = (PLL_LOCK) ? cks8 : 1'b0;
+    assign gpio_31 = (PLL_LOCK) ? cks8[0] : 1'b0;
 
     initial begin
         cks8 = 0;
     end
 
-    always @ (posedge clk_100mhz) cks8 <= ~cks8;
+    always @ (posedge clk_100mhz) cks8 <= cks8 + 1;
 
 endmodule
