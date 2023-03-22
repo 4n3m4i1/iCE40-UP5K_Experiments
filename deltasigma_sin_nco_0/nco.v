@@ -41,6 +41,8 @@ module SIN_NCO
 
     assign ncoovfsync = (!bram_addr && !bram_rd_state) ? 1'b1 : 1'b0;
 
+
+
     initial begin
         bram_addr = 0;
         bram_rd = 0;
@@ -56,10 +58,18 @@ module SIN_NCO
         
         if(nco_clk_div_acc >= nco_div_buffer) begin
             nco_clk_div_acc <= {16{1'b0}};
-            bram_addr <= bram_addr + 1;
-            
+            bram_addr = bram_addr + 1;
+            /*
+            if(!bram_rd) begin
+                bram_addr = bram_addr + 1;
+                bram_rd = 1'b1;
+            end
+            */
+            //nco_out <= bramo;
+
             if(!bram_rd) bram_rd_state <= bram_rd_state + 1;
         end
+        
         else begin
             case (bram_rd_state)
                 1: begin
@@ -78,6 +88,7 @@ module SIN_NCO
                 end
             endcase
         end
+        
     end
 
     // Bram read state machine
