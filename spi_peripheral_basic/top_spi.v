@@ -22,8 +22,8 @@ module spi_hardip_top
     
     reg [2:0]clk_ctr;
 
-    //assign miso_pad = (csn_pad) ? 1'b0 : spi_tx[0];
-    assign miso_pad = spi_tx[7];
+    assign miso_pad = (csn_pad) ? 1'b0 : spi_tx[7];
+    //assign miso_pad = spi_tx[7];
 
     initial begin
         d_recieved = 0;
@@ -44,8 +44,8 @@ module spi_hardip_top
         if(!csn_pad) begin
             spi_rx = spi_rx << 1;
             spi_rx[0] = mosi_pad;
-            //spi_rx <= {mosi_pad, spi_rx >> 1};
             clk_ctr = clk_ctr + 1;
+
             if(clk_ctr == 3'b000) begin
                 d_recieved = spi_rx;
                 DRDY = 1'b1;
@@ -55,7 +55,6 @@ module spi_hardip_top
     end
 
     always @ (negedge sck_pad) begin
-        //if(!csn_pad && clk_ctr) begin
         if(!csn_pad) begin
             spi_tx = spi_tx << 1;
         end
@@ -63,9 +62,4 @@ module spi_hardip_top
         if(!clk_ctr) spi_tx <= {1'b0,d_to_send[(BYTE_W - 1):0]};
     end
 
-/*
-    always @ (posedge DWRITTEN) begin
-        DRDY <= 1'b0;
-    end
-*/
 endmodule
