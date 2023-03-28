@@ -14,7 +14,8 @@ module spi_single_clk
     input spi_data_written,
     input [(BYTE_W - 1):0]spi_data_to_send,
     output reg [(BYTE_W - 1):0]spi_data_rx,
-    output reg spi_dreq
+    output reg spi_dreq,
+    output reg valid_read
 );
 
 /*
@@ -39,7 +40,7 @@ module spi_single_clk
 
         sck_edge_detector = 3'b000;
 
-
+        valid_read = 1'b1;
 
         TX_SHIFT = {(BYTE_W + 1){1'b0}};
         RX_SHIFT = {(BYTE_W + 1){1'b0}};
@@ -53,11 +54,14 @@ module spi_single_clk
             sck_edge_detector = {sck_edge_detector[1], sck_edge_detector[0], sck_pad};
 
             if((sck_edge_detector == 3'b100) ||
-                (sck_edge_detector == 2'b011)) begin
+                (sck_edge_detector == 3'b011)) begin
+
                 if(sck_pad) begin            // RISING Event
                     RX_SHIFT <= {RX_SHIFT[(BYTE_W - 1):0], mosi_pad};
                   //  RX_SHIFT = RX_SHIFT;
                   //  RX_SHIFT[0] = mosi_pad;
+                    // More byte writes aren't valid
+                    //valid_read <= 1'b0;
                 end
 
                 if(!sck_pad) begin            // FALLING Event
@@ -65,20 +69,29 @@ module spi_single_clk
                     shift_counter = shift_counter + 1;
                 end
             
-                if(shift_counter == 0) begin
+                if(shift_counter == 0 && valid_read) begin
                     spi_data_rx <= RX_SHIFT;
                     spi_dreq <= 1'b1;
+                end
+
+                if(shift_counter == 3'b111) begin
+                    // Reads as input are now valid
+                    valid_read <= 1'b1;
                 end
             end
         end
         else begin      // CS Deassert
             shift_counter <= 0;
+            TX_SHIFT <= {(BYTE_W + 1){1'b0}};
         end
 
-        if(spi_data_written && shift_counter == 0) begin
+        if(spi_data_written && shift_counter == 0 && valid_read) begin
             TX_SHIFT <= {1'b0, spi_data_to_send};
             //TX_SHIFT <= {spi_data_to_send, 1'b0};
             spi_dreq <= 1'b0;
+
+            // Only valid once
+            valid_read <= 1'b0;
         end
 
     end

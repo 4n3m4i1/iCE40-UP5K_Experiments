@@ -9,6 +9,7 @@ module spi_single_clk_tb();
     reg [7:0]dts;
     wire [7:0]drx;
 
+    wire valid_for_write;
 /*
 module spi_single_clk
 #(
@@ -36,6 +37,8 @@ module spi_single_clk
         .mosi_pad(mosi),
         .miso_pad(miso),
         .spi_dreq(dready),
+
+        .valid_read(valid_for_write),
 
         .spi_data_written(dready),
 
