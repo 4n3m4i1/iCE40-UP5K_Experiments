@@ -25,7 +25,7 @@ module single_midi_tb();
     output wire new_byte_strobe
 */
     wire [7:0]data;
-    wire data_is_cmd;
+    wire data_is_cmd, dready;
 
     single_midi_in
     #(
@@ -35,7 +35,8 @@ module single_midi_tb();
         .MIDI_IN(sim_midi_dat),
 
         .data_rx(data),
-        .is_command(data_is_cmd)
+        .is_command(data_is_cmd),
+        .new_byte_strobe(dready)
     );
 
 

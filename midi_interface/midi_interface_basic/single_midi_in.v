@@ -13,7 +13,7 @@ module single_midi_in
 
     output reg [(BYTE_W - 1):0] data_rx,
     output reg is_command,
-    output wire new_byte_strobe
+    output reg new_byte_strobe
 );
 
     // Should be 768
@@ -25,18 +25,19 @@ module single_midi_in
     // Falling edge for start bit
     localparam START_CONDITION = 2'b10;
 
-    reg [3:0]state;
+    reg [2:0]state;
     reg [10:0]clk_accumulator;
     reg [1:0]start_bit_detector;
     reg [9:0]frame_input;
 
     initial begin
-        state = 4'h0;
+        state = 3'h0;
         data_rx = 8'h00;
         is_command = 1'b0;
         start_bit_detector = 2'b00;
         clk_accumulator = {11{1'b0}};
         frame_input = {10{1'b0}};
+        new_byte_strobe = 1'b0;
     end
 
 /*
@@ -50,8 +51,8 @@ module single_midi_in
         start_bit_detector <= {start_bit_detector[0], MIDI_IN};
         
 
-        if(state == 4'h0 && start_bit_detector == START_CONDITION) begin
-            state <= 4'h1;
+        if(state == 3'h0 && start_bit_detector == START_CONDITION) begin
+            state <= 3'h1;
             clk_accumulator <= {11{1'b0}};
         end
         //else begin
@@ -90,9 +91,29 @@ module single_midi_in
                 data_rx <= frame_input[8:1];
 
                 is_command <= frame_input[8]; 
+
+                new_byte_strobe <= 1'b1;
             end
 
+            4: begin
+                new_byte_strobe <= 1'b0;
+                is_command <= 1'b0;
 
+                state <= state + 1;
+            end
+
+            5: begin
+                
+                state <= state + 1;
+            end
+
+            6: begin
+                state <= state + 1;
+            end
+
+            7: begin
+                state <= state + 1;
+            end
         endcase
     end
 endmodule
