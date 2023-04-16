@@ -17,10 +17,13 @@ module single_midi_in
 );
 
     // Should be 768
-    localparam CLK_PER_MIDI_BIT = (SYSCLK_F / MIDI_BAUD) / 2;
+    //localparam CLK_PER_MIDI_BIT = (SYSCLK_F / MIDI_BAUD) / 2;
+    localparam CLK_PER_MIDI_BIT = 11'd768;
+
 
     // 384
-    localparam HALF_BIT_PERIOD = CLK_PER_MIDI_BIT / 2;
+    //localparam HALF_BIT_PERIOD = CLK_PER_MIDI_BIT / 2;
+    localparam HALF_BIT_PERIOD = 11'd384;
 
     // Falling edge for start bit
     localparam START_CONDITION = 2'b10;
@@ -31,7 +34,7 @@ module single_midi_in
     reg [9:0]frame_input;
 
     initial begin
-        state = 3'h0;
+        state = 3'b000;
         data_rx = 8'h00;
         is_command = 1'b0;
         start_bit_detector = 2'b00;
@@ -51,8 +54,8 @@ module single_midi_in
         start_bit_detector <= {start_bit_detector[0], MIDI_IN};
         
 
-        if(state == 3'h0 && start_bit_detector == START_CONDITION) begin
-            state <= 3'h1;
+        if((~|state) && start_bit_detector == START_CONDITION) begin
+            state <= 3'b001;
             clk_accumulator <= {11{1'b0}};
         end
         //else begin
@@ -89,31 +92,17 @@ module single_midi_in
                 state <= state + 1;
 
                 data_rx <= frame_input[8:1];
+                new_byte_strobe <= 1'b1;
 
                 is_command <= frame_input[8]; 
-
-                new_byte_strobe <= 1'b1;
             end
 
-            4: begin
-                new_byte_strobe <= 1'b0;
-                is_command <= 1'b0;
-
-                state <= state + 1;
-            end
+            4: state <= state + 1;
 
             5: begin
-                
-                state <= state + 1;
+                new_byte_strobe <= 1'b0;
             end
 
-            6: begin
-                state <= state + 1;
-            end
-
-            7: begin
-                state <= state + 1;
-            end
         endcase
     end
 endmodule
