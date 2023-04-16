@@ -77,7 +77,7 @@ void cvt_freq_to_nco_divider(uint16_t *bram_dat, double *dblarr, uint32_t clk_f)
 
     for(int n = 0; n < NUM_NOTES; n++){
         bram_dat[n] = (uint16_t) (((double)clk_f) / (dblarr[n] * (double)SIZEOF_BRAM));
-        printf("%3d = 0x%04X == %u\n", n, bram_dat[n], bram_dat[n]);
+        printf("%03X = 0x%04X == %u\n", n, bram_dat[n], bram_dat[n]);
     }
 }
 
