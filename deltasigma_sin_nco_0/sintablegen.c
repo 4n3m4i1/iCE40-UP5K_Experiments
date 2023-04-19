@@ -22,7 +22,9 @@ int main(){
 #endif
 
 #if NUM_BITS == 16
-        uint16_t sam = (uint16_t)(((double)((UINT16_MAX / 16) - 1)) * (1.0 + sin((double)n * ((M_PI * 2.0) / ((double) NUM_SAMPLES)))) );
+        uint16_t sam = 128 + (uint16_t)(((double)((UINT16_MAX / 16) - 1)) * (1.0 + (sin(16.0 * (double)n * ((M_PI * 2.0) / ((double) NUM_SAMPLES))) 
+                                                                                //* sin(16.0 * (double)n * ((M_PI * 2.0) / ((double) NUM_SAMPLES)))
+                                                                                )));
 #endif
 
 #if NUM_BITS == 0

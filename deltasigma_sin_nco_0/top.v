@@ -16,7 +16,11 @@ module top
         .CLKHFPU(1'b1),
         .CLKHF(clk_hf)
     );
+<<<<<<< HEAD
     // 48M / 1 = 48M
+=======
+    // 48M / 2 = 24M
+>>>>>>> 0911d170bf0831fbddcbdc6e10cf19fd06af7da8
     defparam inthfosc.CLKHF_DIV = "0b01";
 
 
@@ -69,7 +73,7 @@ module fods_mod
     initial begin
         //nco_divvy = 188;    // 1khz
 
-        nco_divvy = 8;
+        nco_divvy = 16;
 
        // int_cl_lf_div = 0;
     end
