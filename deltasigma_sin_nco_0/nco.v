@@ -56,10 +56,19 @@ module SIN_NCO
         
         if(nco_clk_div_acc >= nco_div_buffer) begin
             nco_clk_div_acc <= {16{1'b0}};
-            bram_addr <= bram_addr + 1;
             
-            if(!bram_rd) bram_rd_state <= bram_rd_state + 1;
+            bram_addr <= bram_addr + 1;
+            bram_rd <= 1'b1;
+            
+            //if(!bram_rd) bram_rd_state <= bram_rd_state + 1;
         end
+
+        if(bram_rd) begin
+            nco_out = bramo;
+            bram_rd = 1'b0;
+        end
+
+/*
         else begin
             case (bram_rd_state)
                 1: begin
@@ -78,11 +87,14 @@ module SIN_NCO
                 end
             endcase
         end
+*/
     end
 
     // Bram read state machine
     //  == 0, idle
     //  == 1, read initiate
     //  == 2, wait
+
+
 
 endmodule

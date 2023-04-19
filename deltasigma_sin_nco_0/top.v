@@ -17,7 +17,7 @@ module top
         .CLKHF(clk_hf)
     );
     // 48M / 1 = 48M
-    //defparam inthfosc.CLKHF_DIV = "0b00";
+    defparam inthfosc.CLKHF_DIV = "0b01";
 
 
 //    wire clk_lf;
