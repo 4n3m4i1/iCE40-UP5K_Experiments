@@ -13,6 +13,9 @@
         SCK = 8e6 Hz
 
     We will only sample from channel 0
+
+    This instance is almost entirely aimed at continuous sampling
+        at the predefined rate
 */
 
 
@@ -104,6 +107,7 @@ AD0 = 0
                     RX_DONE     <= RX_INVALID;
                     oa_state    <= INIT_ADC_RX;
                 end
+                else CSN <= CS_DEASSERT;
             end
 // 2
             INIT_ADC_RX: begin
@@ -114,6 +118,7 @@ AD0 = 0
                     DO_FRAME    <= {BYTE_W{1'b0}};  // Select channel here
                     shift_ctr   <= 4'h0;
                 end
+                else CSN <= CS_DEASSERT;
             end
 // 3
             SHIFT_OUT: begin
@@ -144,7 +149,7 @@ AD0 = 0
             end
 // 6
             SHIFT_DONE: begin
-                DATA_READ   <= DI_FRAME[11:4];
+                DATA_READ   <= DI_FRAME[10:3];  //
                 RX_DONE     <= RX_VALID;
                 oa_state    <= INIT_ADC_RX;
             end
