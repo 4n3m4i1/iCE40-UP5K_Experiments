@@ -1,0 +1,10 @@
+*.vcd
+*.asc
+*.log
+*.out
+*.exe
+*.sconsign.dblite
+*.history
+*.bin
+*.json
+
