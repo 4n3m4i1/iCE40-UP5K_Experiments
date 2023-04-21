@@ -26,7 +26,7 @@ module top
     );
     //defparam inthfosc.CLKHF_DIV = "0b01";
     // 42M / 2 = 24M
-    defparam inthfosc.CLKHF_DIV = "0b00";
+    defparam inthfosc.CLKHF_DIV = "0b01";
 
 /*
 module main_state_machine
@@ -205,6 +205,31 @@ module t_goert_runtime
     output reg [15:0]result
 );
 */
+
+/*
+module goertzel_core
+(
+    input dsp_clk,
+    input [(SAMPLE_W - 1):0]sample_data,
+    input [(D_W - 1):0]coeff,
+    
+    input start,
+
+    output reg [(NUM_SAMPLES_BITS - 1):0]sample_address,
+    output reg [(D_W - 1):0]T1_OUT,
+    output reg [(D_W - 1):0]T2_OUT,
+
+    // Data is valid while done is high
+    output reg done
+);
+*/
+
+    goertzel_core GC1
+    (
+        .dsp_clk()
+    );
+
+/*
     assign led_green = (mul_res == 16'h7A63) ? 1'b0 : 1'b1;
 
     t_goert_runtime TGT
@@ -212,6 +237,6 @@ module t_goert_runtime
         .system_clk(clk_24Mhz),
         .result(mul_res)  
     );
-
+*/
 
 endmodule
