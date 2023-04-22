@@ -1,5 +1,12 @@
+/*
+    Delaying of the ADC interface initiation is a must, 
+    the power on sequence can happen wrong and the
+    interface can start offset by 1 bit to the left.
 
+    This is NOT accounted for here!!!!
 
+    Do not implement with this enable sequence
+*/
 
 module top
 (
@@ -81,14 +88,14 @@ module top
         .RX_DONE(adc_done)
     );
 
-    reg [15:0]display_update_delay;
+    reg [14:0]display_update_delay;
     reg [7:0]inter_data;
 
     initial begin
         clk_8M = 1'b0;
         dbg_div = {8{1'b0}};
         inter_data = 8'h00;
-        display_update_delay = {16{1'b0}};
+        display_update_delay = {15{1'b0}};
     end
 
     always @ (posedge PLL_OUT) begin
@@ -101,7 +108,7 @@ module top
             inter_data <= adc_data;
             display_update_delay <= display_update_delay + 1;
         
-            if(display_update_delay == 16'h0000) dbg_div <= inter_data;
+            if(display_update_delay == 15'h0000) dbg_div <= inter_data;
         end
     end
 endmodule
