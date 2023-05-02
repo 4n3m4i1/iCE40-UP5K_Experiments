@@ -1,16 +1,20 @@
 /*
     Single clock domain SPI peripheral
 
+    CSN     IOT 36B gpio_25
+    MOSI    IOT 38B gpio_27
+    MISO    IOT 39A gpio_26
+    SCK     IOT 41A gpio_28
 */
 module top
 #(
     parameter BYTE_W = 8
 )
 (
-    input wire gpio_23,         // SCK
+    input wire gpio_28,         // SCK
     input wire gpio_25,         // ~cs
-    input wire gpio_26,         // MOSI
-    output wire gpio_27,        // MISO
+    input wire gpio_27,         // MOSI
+    output wire gpio_26,        // MISO
 
     output wire led_green
     //output wire led_blue
@@ -55,9 +59,9 @@ module main_state_machine
     (
         .sys_clk(clk_24Mhz),
         .CSN_PAD(gpio_25),
-        .SCK_PAD(gpio_23),
-        .MOSI_PAD(gpio_26),
-        .MISO_PAD(gpio_27),
+        .SCK_PAD(gpio_28),
+        .MOSI_PAD(gpio_27),
+        .MISO_PAD(gpio_26),
 
         .comm_is_RX(1'b0),
         .comm_is_TX(1'b1),
@@ -84,7 +88,7 @@ module dsp_16x16_fix14_16_signed_mul
     output [(D_W - 1):0]fix_14_16_Out
 );
 */
-/*
+
     dsp_16x16_fix14_16_signed_mul MUL0
     (
         .sys_clk(clk_24Mhz),
@@ -93,7 +97,7 @@ module dsp_16x16_fix14_16_signed_mul
         .dsp_B(16'h012B),
         .fix_14_16_Out(mul_res)
     );
-*/
+
 /*
 module dsp_16x16_fix14_16_signed_mac
 #(
@@ -128,6 +132,7 @@ module dsp_16x16_fix14_16_signed_mac
         MUL_ADD_0 = 16'h0012;
     end
 */
+
 /*
 module dsp_control_unit
 #(
@@ -137,7 +142,7 @@ module dsp_control_unit
 (
     input sys_clk,
     input dsp_en,
-/*
+
     input ADC_MISO,
     output wire ADC_MOSI,
     output wire ADC_CS,
@@ -151,7 +156,7 @@ module dsp_control_unit
     input [(BYTE_W - 1):0]input_data,
     input TX_requested,             // High when TX fifo has data
     output reg new_input_request    // request new TX fifo data
-*//*
+
     output wire [15:0]goert_data
 );
 */
@@ -224,10 +229,10 @@ module goertzel_core
 );
 */
 
-    goertzel_core GC1
-    (
-        .dsp_clk()
-    );
+ //   goertzel_core GC1
+ //   (
+ //       .dsp_clk()
+ //   );
 
 /*
     assign led_green = (mul_res == 16'h7A63) ? 1'b0 : 1'b1;

@@ -1,0 +1,6 @@
+*.asc
+*.bin
+*.log
+*.out
+*.vcd
+*.history
