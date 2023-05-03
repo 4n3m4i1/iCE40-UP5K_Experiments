@@ -11,7 +11,7 @@ module goertzel_loop_core
     input sys_clk,
     input enable,
     input start,
-    input [(D_W - 1):0]coeff,
+    input signed [(D_W - 1):0]coeff,
 
     input [(B_W - 1):0]data_n,
 
@@ -30,7 +30,7 @@ module goertzel_loop_core
     localparam RUN_1    = 3'h2;
     localparam POST_RESULTS = 3'h3;
 
-    reg [(D_W - 1):0]coeff_buffer;
+    reg signed [(D_W - 1):0]coeff_buffer;
 /*
 dsp_16x16_fix14_16_signed_mul MUL0
     (
@@ -65,7 +65,7 @@ dsp_16x16_fix14_16_signed_mul MUL0
         ready           = 1'b0;
         done            = 1'b0;
 
-        read_address    = {9{1'b0}};
+        read_address    = {10{1'b0}};
     end
 
     always @ (posedge sys_clk) begin
