@@ -18,21 +18,26 @@ module dsp_goertzel_manager
     input [(B_W - 1):0]adc_data_in,
 
     output reg [15:0]goertzel_mag,
-    output reg mag_rdy
+    output reg mag_rdy,
+
+    output reg request_trig,
+    input signed [15:0]sin_in,
+    input signed [15:0]cos_in
 );
 
-    localparam IDLE     = 3'h0;     // Wait for bank change
-    localparam STALL    = 3'h1;     // Find which bank to run DSP on
-    localparam RUN_BANK_LOOP    = 3'h2;
-    localparam RUN_BANK_PP      = 3'h3;
-    localparam RUN_BANK_PP_1    = 3'h4;
-    localparam RUN_BANK_PP_2    = 3'h5;
-    localparam RUN_BANK_PP_3    = 3'h6;
-    localparam RUN_BANK_PP_4    = 3'h7;
+    localparam IDLE     = 4'h0;     // Wait for bank change
+    localparam GET_TRIG = 4'h1;     // Find which bank to run DSP on
+    localparam STALL    = 4'h2;     // Find which bank to run DSP on
+    localparam RUN_BANK_LOOP    = 4'h3;
+    localparam RUN_BANK_PP      = 4'h4;
+    localparam RUN_BANK_PP_1    = 4'h5;
+    localparam RUN_BANK_PP_2    = 4'h6;
+    localparam RUN_BANK_PP_3    = 4'h7;
+    localparam RUN_BANK_PP_4    = 4'h8;
     
     
 
-    reg [2:0]oa_state;
+    reg [3:0]oa_state;
 
     reg wr_en_0, rd_en_0;
     reg wr_en_1, rd_en_1;
@@ -120,8 +125,11 @@ module dsp_goertzel_manager
         .fix_14_16_Out(PP_OUT)
     );
 
+    reg stall_write;
+
     initial begin
         oa_state    = IDLE;
+        stall_write = 0;
         wr_address  = 0;
         wr_en_0     = 0;
         rd_en_0     = 0;
@@ -136,8 +144,18 @@ module dsp_goertzel_manager
         old_bank_select = 0;
 
         goert_loop_start = 0;
-        t_sin = 16'h3CC5;
-        t_cos = 16'h1413;
+        
+        request_trig = 0;
+        t_sin = 0;
+        t_cos = 0;
+        // 100k bin
+        //t_sin = 16'h3CC5;
+        //t_cos = 16'h1413;
+
+        // 120k bin
+        //t_sin = 16'h3F31;
+        //t_cos = 16'h03EC;
+
         inv_cos = 0;
         T1_BUFF = 0;
         T2_BUFF = 0;
@@ -157,12 +175,21 @@ module dsp_goertzel_manager
                     if(wr_en_0) begin
                         wr_en_0     <= 1'b0;
                         wr_address  <= wr_address + 1;
+
+                        
                     end
 
                     if(wr_address == (NUM_SAMPLES - 1)) begin
-                        bank_select <= 1'b1;
+                        stall_write <= 1'b1;
+                        //bank_select <= 1'b1;
                         wr_address  <= wr_address + 1;
                     end
+
+                    if(stall_write) begin
+                        stall_write <= 1'b0;
+                        bank_select <= 1'b1;
+                    end
+                    
                 end
             end
 
@@ -177,8 +204,14 @@ module dsp_goertzel_manager
                     end
 
                     if(wr_address == (NUM_SAMPLES - 1)) begin
-                        bank_select <= 1'b0;
+                        stall_write <= 1'b1;
+                        //bank_select <= 1'b0;
                         wr_address  <= wr_address + 1;
+                    end
+
+                    if(stall_write) begin
+                        stall_write <= 1'b0;
+                        bank_select <= 1'b0;
                     end
                 end
             end
@@ -193,11 +226,21 @@ module dsp_goertzel_manager
             IDLE: begin
                 mag_rdy <= 1'b0;
                 if(bank_chg_detect) begin
-                    oa_state <= STALL;
+                    oa_state        <= GET_TRIG;
+                    request_trig    <= 1'b1;
                 end
             end
 
+            GET_TRIG: begin
+                t_sin           <= sin_in;
+                t_cos           <= cos_in;
+                
+                request_trig    <= 1'b0;
+                oa_state        <= STALL;
+            end
+
             STALL: begin
+                
                 oa_state <= RUN_BANK_LOOP;
                 goert_loop_start <= 1'b1;
 
