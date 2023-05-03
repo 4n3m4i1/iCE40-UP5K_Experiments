@@ -57,35 +57,35 @@ dsp_16x16_fix14_16_signed_mul MUL0
 
     initial begin
         oa_state        = IDLE;
-        T2_pre          = 0;
-        T1              = 0;
-        T2              = 0;
-        coeff_buffer    = 0;
+        T2_pre          = {D_W{1'b0}};
+        T1              = {D_W{1'b0}};
+        T2              = {D_W{1'b0}};
+        coeff_buffer    = {D_W{1'b0}};
 
-        ready           = 0;
-        done            = 0;
+        ready           = 1'b0;
+        done            = 1'b0;
 
-        read_address    = 0;
+        read_address    = {9{1'b0}};
     end
 
     always @ (posedge sys_clk) begin
         case (oa_state)
             IDLE: begin
-                done    <= 0;
+                done    <= 1'b0;
 
                 if(start) begin
-                    oa_state <= RUN_0;
-                    T1      <= 0;
-                    T2      <= 0;
-                    T2_pre  <= 0;
-                    coeff_buffer <= coeff;
-                    read_address <= 0;
+                    oa_state        <= RUN_0;
+                    T1              <= {D_W{1'b0}};
+                    T2              <= {D_W{1'b0}};
+                    T2_pre          <= {D_W{1'b0}};
+                    coeff_buffer    <= coeff;
+                    read_address    <= {9{1'b0}};
                 end
             end
             RUN_0: begin
-                ready  <= 1;
-                T2_pre <= {8'h00, data_n} - T2;
-                oa_state <= RUN_1;
+                ready       <= 1'b1;
+                T2_pre      <= {8'h00, data_n[7:0]} - T2;
+                oa_state    <= RUN_1;
             end
             RUN_1: begin
                 T1 <= mul_res + T2_pre;
@@ -98,8 +98,9 @@ dsp_16x16_fix14_16_signed_mul MUL0
                 end
             end
             POST_RESULTS: begin
-                ready   <= 0;
-                done    <= 1;
+                ready   <= 1'b0;
+                done    <= 1'b1;
+                oa_state <= IDLE;
             end
         endcase
     end

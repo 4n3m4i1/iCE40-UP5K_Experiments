@@ -186,7 +186,7 @@ module dsp_goertzel_manager
     end
 
 
-    always @ (posedge sys_clk) begin
+    always @ (posedge sys_clk) begin    // handle DSP run on bank change select
         old_bank_select <= bank_select;
 
         case (oa_state)

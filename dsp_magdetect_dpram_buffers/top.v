@@ -11,6 +11,8 @@
 module top
 (
 
+    output led_red,
+
     input gpio_26,              // SDI
     output wire gpio_25,        // SDO
     output wire gpio_23,        // SCK
@@ -103,30 +105,53 @@ module top
     );
 
 
-    reg [7:0]display_update_delay;
-    reg [7:0]inter_data;
+    reg [23:0]display_update_delay;
+    reg which_byte_2_disp;
+
+    reg [3:0]display_update_ctr;
+
+    reg [15:0] temp_val;
+
+    assign led_red = ~which_byte_2_disp;
 
     initial begin
         clk_8M = 1'b0;
         clk_24M = 1'b0;
         dbg_div = {8{1'b0}};
-        inter_data = 8'h00;
-        display_update_delay = {8{1'b0}};
+        which_byte_2_disp = 1'b0;
+        display_update_delay = {23{1'b0}};
+        display_update_ctr = 0;
     end
 
     always @ (posedge PLL_OUT) begin
         clk_8M <= ~clk_8M;
-        
     end
 
     always @ (posedge clk_48M) begin
         clk_24M <= ~clk_24M;
+    end
 
-        if(mag_ready) begin
-            display_update_delay <= display_update_delay + 1;
-        
-            //if(display_update_delay == 0) 
-            dbg_div <= mag_val[15:8];
+    always @ (posedge clk_24M) begin
+        display_update_delay <= display_update_delay + 1;
+
+/*
+        if(display_update_delay == 0) begin             // Swap bytes every 0.5s
+            which_byte_2_disp <= ~which_byte_2_disp;
+
+            if(which_byte_2_disp) begin
+                dbg_div <= temp_val[15:8];
+            end
+            else begin
+                dbg_div <= temp_val[7:0];
+            end
+        end
+*/
+        if(mag_ready) begin                             // Update mag val every whatever s
+            display_update_ctr <= display_update_ctr + 1;
+            if(display_update_ctr == 0) begin
+               // temp_val <= mag_val;
+                dbg_div <= mag_val[15:0];
+            end
         end
     end
 endmodule

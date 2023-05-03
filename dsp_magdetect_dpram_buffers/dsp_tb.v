@@ -77,6 +77,30 @@ module dsp_goertzel_manager
             #1958;
         end
 
+        for(n = 0; n < 512; n = n+1) begin
+            dsp_adc_data = test_data[n];
+            adc_dat_write = 1;
+            #42;
+            adc_dat_write = 0;
+            #1958;
+        end
+
+        for(n = 0; n < 512; n = n+1) begin
+            dsp_adc_data = test_data[n];
+            adc_dat_write = 1;
+            #42;
+            adc_dat_write = 0;
+            #1958;
+        end
+
+        for(n = 0; n < 512; n = n+1) begin
+            dsp_adc_data = test_data[n];
+            adc_dat_write = 1;
+            #42;
+            adc_dat_write = 0;
+            #1958;
+        end
+
 
         $finish;
     end
