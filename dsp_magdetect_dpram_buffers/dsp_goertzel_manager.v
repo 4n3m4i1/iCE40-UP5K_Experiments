@@ -126,11 +126,14 @@ module dsp_goertzel_manager
     );
 
     reg stall_write;
+    reg last_wr_add_msb;    // ovf detect
+
 
     initial begin
         oa_state    = IDLE;
         stall_write = 0;
         wr_address  = 0;
+        last_wr_add_msb = 0;
         wr_en_0     = 0;
         rd_en_0     = 0;
 
@@ -175,14 +178,15 @@ module dsp_goertzel_manager
                     if(wr_en_0) begin
                         wr_en_0     <= 1'b0;
                         wr_address  <= wr_address + 1;
-
-                        
+                        last_wr_add_msb <= wr_address[8];
                     end
 
-                    if(wr_address == (NUM_SAMPLES - 1)) begin
+                    //if(wr_address == (NUM_SAMPLES - 1)) begin
+                    if(last_wr_add_msb && (wr_address == 0)) begin
                         stall_write <= 1'b1;
                         //bank_select <= 1'b1;
                         wr_address  <= wr_address + 1;
+                        
                     end
 
                     if(stall_write) begin
@@ -201,9 +205,11 @@ module dsp_goertzel_manager
                     if(wr_en_1) begin
                         wr_en_1     <= 1'b0;
                         wr_address  <= wr_address + 1;
+                        last_wr_add_msb <= wr_address[8];
                     end
 
-                    if(wr_address == (NUM_SAMPLES - 1)) begin
+                    if(last_wr_add_msb && (wr_address == 0)) begin
+                    //if(wr_address == (NUM_SAMPLES - 1)) begin
                         stall_write <= 1'b1;
                         //bank_select <= 1'b0;
                         wr_address  <= wr_address + 1;

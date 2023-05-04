@@ -3,19 +3,19 @@ module dsp_tb();
 
 
     // Bin 99, 97.6k
-    localparam SIN_97K6 = 16'h3BFD;
+    localparam SIN_97K6 = 16'h3BFD;     //400
     localparam COS_97K6 = 16'h164C;
 
     // Bin 102, 100k
-    localparam SIN_100K = 16'h3CC5;
+    localparam SIN_100K = 16'h3CC5; // 32k
     localparam COS_100K = 16'h1413;
 
     // Bin 110, 108k
-    localparam SIN_108K = 16'h3E71;
+    localparam SIN_108K = 16'h3E71; // 162
     localparam COS_108K = 16'h0F8C;
     
     // Bin 153, 150k
-    localparam SIN_150K = 16'h3D02;
+    localparam SIN_150K = 16'h3D02; // 2
     localparam COS_150K = 16'hECAC;
 
     reg signed [15:0] sin_dat [0:3];
