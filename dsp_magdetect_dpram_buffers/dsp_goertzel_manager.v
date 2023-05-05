@@ -22,18 +22,21 @@ module dsp_goertzel_manager
 
     output reg request_trig,
     input signed [15:0]sin_in,
-    input signed [15:0]cos_in
+    input signed [15:0]cos_in,
+    // Must be at least 1
+    input [4:0]num_runs                 // Number of loops to run. New trig coeff will be requester for each run.
 );
 
     localparam IDLE     = 4'h0;     // Wait for bank change
-    localparam GET_TRIG = 4'h1;     // Find which bank to run DSP on
-    localparam STALL    = 4'h2;     // Find which bank to run DSP on
-    localparam RUN_BANK_LOOP    = 4'h3;
-    localparam RUN_BANK_PP      = 4'h4;
-    localparam RUN_BANK_PP_1    = 4'h5;
-    localparam RUN_BANK_PP_2    = 4'h6;
-    localparam RUN_BANK_PP_3    = 4'h7;
-    localparam RUN_BANK_PP_4    = 4'h8;
+    localparam START    = 4'h1;     // Rq new trig coeffs
+    localparam GET_TRIG = 4'h2;     // Find which bank to run DSP on
+    localparam STALL    = 4'h3;     // Find which bank to run DSP on
+    localparam RUN_BANK_LOOP    = 4'h4;
+    localparam RUN_BANK_PP      = 4'h5;
+    localparam RUN_BANK_PP_1    = 4'h6;
+    localparam RUN_BANK_PP_2    = 4'h7;
+    localparam RUN_BANK_PP_3    = 4'h8;
+    localparam RUN_BANK_PP_4    = 4'h9;
     
     
 
@@ -128,6 +131,7 @@ module dsp_goertzel_manager
     reg stall_write;
     reg last_wr_add_msb;    // ovf detect
 
+    reg [4:0]run_ctr;
 
     initial begin
         oa_state    = IDLE;
@@ -165,6 +169,8 @@ module dsp_goertzel_manager
 
         PP_A = 0;
         PP_B = 0;
+
+        run_ctr = 0;
     end
 
 
@@ -231,10 +237,18 @@ module dsp_goertzel_manager
         case (oa_state)
             IDLE: begin
                 mag_rdy <= 1'b0;
-                if(bank_chg_detect) begin
-                    oa_state        <= GET_TRIG;
-                    request_trig    <= 1'b1;
+                if(bank_chg_detect && (|num_runs)) begin
+                    oa_state <= START;
+                    //oa_state        <= GET_TRIG;
+                    //request_trig    <= 1'b1;
                 end
+            end
+
+            START: begin
+                mag_rdy         <= 1'b0;
+                request_trig    <= 1'b1;
+                oa_state        <= GET_TRIG;
+                run_ctr         <= run_ctr + 1;
             end
 
             GET_TRIG: begin
@@ -302,7 +316,14 @@ module dsp_goertzel_manager
             RUN_BANK_PP_4: begin
                 goertzel_mag    <= PP_OUT + T1_BUFF;
                 mag_rdy         <= 1'b1;
-                oa_state        <= IDLE;
+
+                if(run_ctr == num_runs)begin
+                    oa_state        <= IDLE;
+                    run_ctr         <= 0;
+                end
+                else begin
+                    oa_state    <= START;
+                end
             end
         endcase
     end

@@ -56,6 +56,8 @@ module dsp_goertzel_manager
     assign sin_c = sin_dat[j];
     assign cos_c = cos_dat[j];
 
+    reg [4:0]NRS;
+
     dsp_goertzel_manager DSGOER
     (
         .sys_clk(sys_clk),
@@ -67,13 +69,15 @@ module dsp_goertzel_manager
 
         .request_trig(trig_rq),
         .sin_in(sin_c),
-        .cos_in(cos_c)
+        .cos_in(cos_c),
+        .num_runs(NRS)
     );
 
 
     integer n, m;
     
     initial begin
+        NRS         = 4;
         sin_dat[0] = SIN_97K6;
         cos_dat[0] = COS_97K6;
 
