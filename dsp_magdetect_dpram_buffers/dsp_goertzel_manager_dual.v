@@ -2,7 +2,7 @@
 
 
 
-module dsp_goertzel_manager
+module dsp_goertzel_manager_dual
 #(
     parameter D_W = 8,
     parameter B_W = 8,
