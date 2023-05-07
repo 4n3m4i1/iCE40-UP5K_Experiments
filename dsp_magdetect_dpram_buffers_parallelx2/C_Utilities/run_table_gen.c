@@ -49,16 +49,16 @@ int main(int argc, char **argv){
         uint8_t *selected_bins;
         selected_bins = (uint8_t *)malloc(sizeof(uint8_t) * num_args);
 
-        selected_bins[0] = 82;      // 80k
-        selected_bins[1] = 87;      // 85k
-        selected_bins[2] = 92;      // 90k
-        selected_bins[3] = 97;      // 95k
-        selected_bins[4] = 103;     // 100k
-        selected_bins[5] = 108;     // 105k
-        selected_bins[6] = 113;     // 110k
-        selected_bins[7] = 118;     // 115k
-        selected_bins[8] = 123;     // 120k
-        selected_bins[9] = 128;     // 125k
+        selected_bins[0] = 81;      // 80k
+        selected_bins[1] = 86;      // 85k
+        selected_bins[2] = 91;      // 90k
+        selected_bins[3] = 96;      // 95k
+        selected_bins[4] = 102;     // 100k
+        selected_bins[5] = 107;     // 105k
+        selected_bins[6] = 112;     // 110k
+        selected_bins[7] = 117;     // 115k
+        selected_bins[8] = 122;     // 120k
+        selected_bins[9] = 127;     // 125k
 
 
         int n;

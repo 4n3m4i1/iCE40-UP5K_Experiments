@@ -62,11 +62,11 @@ fix14_16 goertzel_mag(uint8_t* data, fix14_16* sin_table, int bin){
 
     coeff = t_cos << 1;                             // 2 * cos() term
 
-    printf("Coeff: %4X\t", (uint16_t)coeff);
+ //   printf("Coeff: %4X\t", (uint16_t)coeff);
 
     t0 = t1 = t2 = 0x0000;                          // init 0
 
-    printf("Sin: %04x\tCos: %04x\t", (uint16_t)t_sin, (uint16_t)t_cos);
+ //   printf("Sin: %04x\tCos: %04x\t", (uint16_t)t_sin, (uint16_t)t_cos);
 
     //printf("\n");
 
@@ -112,7 +112,7 @@ void print_all_bins(uint8_t *sample_buffer, fix14_16 *sin_lut){
 }
 
 int main(){
-    printf("Fixed Size: %2u\n", 8*sizeof(fix14_16));
+    //printf("Fixed Size: %2u\n", 8*sizeof(fix14_16));
 
     uint8_t *sample_buffer = (uint8_t *)malloc(NUM_SAMPLES * sizeof(uint8_t));
 
@@ -170,7 +170,9 @@ int main(){
 */
     for(int n = 0; n < NUM_SAMPLES >> 1; n++){
         res = goertzel_mag(sample_buffer, sin_lut, n);
-        printf("Mag at bin %3d = %4X\n", n, (uint16_t)res);
+        double bin_f = (double) n * ((double)SAMPLE_RATE / 2.0) / ((double)NUM_SAMPLES / 2.0);
+        //printf("Mag at bin %3d = %4X\n", n, (uint16_t)res);
+        printf("%u, %u\n", (uint32_t)bin_f, (uint16_t)res);
     }
 
 

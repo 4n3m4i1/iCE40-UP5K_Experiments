@@ -11,7 +11,7 @@
 
 module dual_goertz_coeff_banks
 #(
-    parameter NUM_RUNS = 8,
+    parameter NUM_RUNS = 10,
     parameter D_W = 16
 )
 (

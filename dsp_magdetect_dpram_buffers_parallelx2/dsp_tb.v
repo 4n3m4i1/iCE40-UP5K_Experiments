@@ -51,7 +51,7 @@ module parallel_goertzel
         dsp_ce = 1;
         #200;
 
-        for(m = 0; m < 2; m = m+1) begin
+        for(m = 0; m < 4; m = m+1) begin
             for(n = 0; n < 512; n = n+1) begin
                 dsp_adc_data = test_data[n];
                 adc_dat_write = 1;
