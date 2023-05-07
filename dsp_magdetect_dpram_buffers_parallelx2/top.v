@@ -91,17 +91,18 @@ module top
     );
 
 
-    wire [15:0]mag_val;
+    wire [15:0]mag_val_0, mag_val_1;
     wire mag_ready;
-    dsp_goertzel_manager GMAN_0
+
+    parallel_goertzel PGS0
     (
         .sys_clk(clk_24M),
-        .adc_rdy(PLL_LOCK),
-        .adc_data_ready(adc_done),
-        .adc_data_in(adc_data),
-
-        .goertzel_mag(mag_val),
-        .mag_rdy(mag_ready)
+        .adc_ready(PLL_LOCK),
+        .adc_data_rdy(adc_done),
+        .adc_data(adc_data),
+        .G0(mag_val_0),
+        .G1(mag_val_1),
+        .G_READY(mag_ready)
     );
 
 
@@ -150,7 +151,7 @@ module top
             display_update_ctr <= display_update_ctr + 1;
             if(display_update_ctr == 0) begin
                // temp_val <= mag_val;
-                dbg_div <= mag_val[15:0];
+                dbg_div <= mag_val_0[15:0] + mag_val_1[15:0];
             end
         end
     end

@@ -156,7 +156,7 @@ module dsp_goertzel_manager_dual
 
         .T1(T1_OUT_1),
         .T2(T2_OUT_1),
-        .read_address(rd_address),
+        //.read_address(rd_address),
         //.ready(goert_ready),
         .done(goert_loop_cmplt_1)
     );
