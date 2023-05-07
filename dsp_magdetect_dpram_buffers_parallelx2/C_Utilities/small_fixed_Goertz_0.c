@@ -62,13 +62,13 @@ fix14_16 goertzel_mag(uint8_t* data, fix14_16* sin_table, int bin){
 
     coeff = t_cos << 1;                             // 2 * cos() term
 
-    printf("Coeff: %4X\t", (uint16_t)coeff);
+    printf("Coeff: %4X\t", coeff);
 
     t0 = t1 = t2 = 0x0000;                          // init 0
 
-    printf("Sin: %04x\tCos: %04x\t", (uint16_t)t_sin, (uint16_t)t_cos);
+    printf("Sin: %04x\tCos: %04x\t", t_sin, t_cos);
 
-    //printf("\n");
+    printf("\n");
 
     for(int n=0; n<NUM_SAMPLES; n++){
  //       printf("Start: t0 = %04X  t1 = %04X  t2 = %04X  ", t0, t1, t2);
@@ -92,7 +92,7 @@ fix14_16 goertzel_mag(uint8_t* data, fix14_16* sin_table, int bin){
     //t1 = t1 - multfix14_16(t2, t_cos);
 
     t_cos = multfix14_16(t_cos, int2fix14_16(-1));
- //   printf("INVCOS: 0x%04X\n", t_cos);
+    printf("INVCOS: 0x%04X\n", t_cos);
     t1 = multfix14_16(t2, t_cos) + t1;
 
     t2 = multfix14_16(t2, t_sin);
@@ -139,7 +139,7 @@ int main(){
 //    printf("\nConst Bin @ 60k:\n");
 //    res = goertzel_mag(sample_buffer, sin_lut, 62);
 //    printf("Power:\t%4X\n", (uint16_t)res);
-/*
+
     // Bin 99
     printf("\nConst Bin @ 97.6k:\n");
     res = goertzel_mag(sample_buffer, sin_lut, 99);
@@ -167,11 +167,11 @@ int main(){
     res = goertzel_mag(sample_buffer, sin_lut, 153);
     printf("Power:\t%4X\n", (uint16_t)res);
 
-*/
-    for(int n = 0; n < NUM_SAMPLES >> 1; n++){
-        res = goertzel_mag(sample_buffer, sin_lut, n);
-        printf("Mag at bin %3d = %4X\n", n, (uint16_t)res);
-    }
+
+//    for(int n = 0; n < NUM_SAMPLES >> 1; n++){
+//        res = goertzel_mag(sample_buffer, sin_lut, n);
+//        printf("Mag at bin %3d = %4X\n", n, res);
+//    }
 
 
 
