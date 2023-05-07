@@ -16,7 +16,13 @@ module parallel_goertzel
     output wire G_READY
 );
 
+    /*
+        Handles ADC sample bank switching
+        and automatic runs of the preprogrammed
+        tables found below.
 
+        Outputs 2 16 bit magnitudes per processing interval
+    */
     wire trig_dreq, trig_rdy;
     wire [15:0]sin_interconn, cos_interconn;
     dsp_goertzel_manager_dual GOERT_x2
@@ -30,7 +36,7 @@ module parallel_goertzel
         .goertzel_mag_1(G1),
         .mag_rdy(G_READY),
         
-        .num_runs(5'h5),
+        .num_runs(5'h5),        // A run in this unique case includes 2 runs, mul by 2 for conversion
 
         .request_trig(trig_dreq),
         .trig_ready(trig_rdy),
@@ -38,7 +44,14 @@ module parallel_goertzel
         .cos_in(cos_interconn)
     );
 
-
+    /*
+        Source of DSP run trig coefficients
+        Can support any arbitrary bin(s) and any arb
+        pattern. This pattern is loaded from run_table.mem.
+        Each processing time interval completes 2 runs,
+        thus each pair of entries in the table run in parallel,
+        then the next pair run, etc..
+    */
     dual_goertz_coeff_banks CFF_BANK_DATA
     (
         .sys_clk(sys_clk),
