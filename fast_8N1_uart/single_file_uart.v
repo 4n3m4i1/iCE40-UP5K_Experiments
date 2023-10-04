@@ -119,6 +119,7 @@ module fast_8N1_UART_RX_
         shift_counter   = 4'h0;
         cycle_ctr       = {(CLK_CT_BITS){1'b0}};
         uarx_shift      = {(FRAME_SIZE){1'b0}};
+        DATA            = {(BYTE_W){1'b0}};
 
         DATA_RDY_STROBE = DATA_NRDY;
     end
