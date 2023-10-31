@@ -6,6 +6,7 @@ module uart_tb();
     wire TX, LOAD_TO_SEND;
     reg RX, enable, tx_load;
 
+    reg [7:0]tx_data;
 /*
 module fast_8N1_UART_TX
 #(
@@ -26,6 +27,7 @@ module fast_8N1_UART_TX
     output reg TX_LINE
 );
 */
+/*
     reg [7:0]tx_data;
     fast_8N1_UART_TX transmitter
     (
@@ -36,42 +38,68 @@ module fast_8N1_UART_TX
         .LOAD_OK(LOAD_TO_SEND),
         .TX_LINE(TX)
     );
+*/
 
 /*
-module fast_8N1_UART_RX
+module uart_controller
 #(
-    parameter SYSCLK_F = 24000000,
-    parameter BYTE_W = 8,
-    parameter BAUDRATE = 500000
+    parameter SYSCLK_FREQ = 24000000,
+    parameter BAUDRATE = 500000,
+    parameter BYTE_W = 8
 )
 (
+    input enable,
     input sys_clk,
-    //input rst,
-    input en,
 
-    input RX_LINE,
+    // RX
+    input wire RX_LINE,
+    output wire [(BYTE_W - 1):0]RX_DATA,
+    output wire RX_DATA_READY,
 
-    output reg [(BYTE_W - 1):0]DATA,
 
-    output reg DATA_RDY_STROBE
+    // TX
+    input wire [(BYTE_W - 1):0]TX_DATA,
+    input wire TX_LOAD,
+    output wire TX_LOAD_OKAY,
+    output wire TX_LINE
 );
 */
+    wire [7:0]RX_DAT;
+    wire RX_DAT_RDY;
+    uart_controller UACTRL
+    (
+        .enable(enable),
+        .sys_clk(sys_clk),
+        // RX
+        .RX_LINE(TX),
+        .RX_DATA(RX_DAT),
+        .RX_DATA_READY(RX_DAT_READY),
+
+        // TX
+        .TX_DATA(tx_data),
+        .TX_LOAD(tx_load),
+        .TX_LOAD_OKAY(LOAD_TO_SEND),
+        .TX_LINE(TX)
+    );
+
+
+
     initial begin
         enable = 0;
-        RX = 0;
+        RX = 0; 
         tx_load = 0;
         tx_data = 8'hA5;
-        #20;
+        #1000;
         enable = 1;
         tx_load = 1;
         #20;
         tx_load = 0;
-        #80000;
+        #8000;
         tx_data = 8'h81;
         tx_load = 1;
         #20;
         tx_load = 0;
-        #80000;
+        #16000;
 
         $finish;
     end
