@@ -163,6 +163,8 @@ module top
 
     assign led_red = ~which_byte_2_disp;
 
+    
+
     initial begin
         clk_8M = 1'b0;
         clk_24M = 1'b0;
@@ -178,6 +180,7 @@ module top
         temp_val_0 = 0;
         temp_val_1 = 0;
         start_sending_uatx = 0;
+
     end
 
     always @ (posedge PLL_OUT) begin
@@ -192,13 +195,59 @@ module top
         if(mag_ready) begin                             // Update mag val every whatever s
             temp_val_0 <= mag_val_0;
             temp_val_1 <= mag_val_1;
-            //dbg_div     <= mag_val_0[7:0];
+            dbg_div    <= mag_val_1[7:0];
             if(send_states == WAIT) start_sending_uatx <= 1'b1;
         end
 
         if(start_sending_uatx) start_sending_uatx <= 1'b0;
     end
 
+    always @ (posedge clk_24M) begin
+        case (send_states)
+            WAIT: begin
+                uart0_tx_loaded <= 1'b0;
+                if(start_sending_uatx && current_run == 3) begin
+                    send_states <= send_states + 1;
+                end
+            end
+
+            1: begin
+                uart0_tx        <= temp_val_0[15:8];
+                uart0_tx_loaded <= 1'b1;
+                send_states     <= 2;
+            end
+
+            2: begin
+                uart0_tx_loaded <= 1'b0;
+                if(uart0_okay_to_load) send_states <= 0;
+            end
+
+            3: begin
+                uart0_tx        <= temp_val_1[15:8];
+                uart0_tx_loaded <= 1'b1;
+                send_states     <= 4;
+            end
+
+            4: begin
+                uart0_tx_loaded <= 1'b0;
+                if(uart0_okay_to_load) send_states <= 5;
+            end
+
+            5: begin
+                uart0_tx        <= temp_val_1[7:0];
+                uart0_tx_loaded <= 1'b1;
+                send_states     <= 6;
+            end
+            
+            6: begin
+                uart0_tx_loaded <= 1'b0;
+                if(uart0_okay_to_load) send_states <= 0;
+            end
+
+        endcase
+    end
+
+/*
     always @ (posedge clk_24M) begin
         case (send_states)
             WAIT: begin
@@ -290,4 +339,5 @@ module top
             end
         endcase
     end
+*/
 endmodule
