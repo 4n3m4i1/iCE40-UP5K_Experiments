@@ -8,9 +8,12 @@
 
 module top
 (
-    output wire gpio_23,        // tx
-    input wire  gpio_25,        // rx
+    //output wire gpio_23,        // tx
+    output wire serial_txd,
+    //input wire  gpio_25,        // rx
+    input wire  serial_rxd,
     
+    output wire spi_cs,
     // Debug LED Bar Graph
     output wire gpio_28,        // MSB
     output wire gpio_38,
@@ -22,6 +25,10 @@ module top
     output wire gpio_37,
     output wire gpio_31         // LSB
 );
+    
+    
+    assign spi_cs = 1'b1;
+    
     reg [7:0]dbg_div;
 
     assign gpio_28 = dbg_div[7];
@@ -75,7 +82,8 @@ module fast_8N1_UART_TX
         .TX_LOAD(tx_load),
         .TX_DATA(tx_data),
         .LOAD_OK(load_ok),
-        .TX_LINE(gpio_23)        
+        //.TX_LINE(gpio_23) 
+        .TX_LINE(serial_txd)       
     );
 
 
@@ -104,7 +112,8 @@ module fast_8N1_UART_RX
     (
         .sys_clk(clk_24M),
         .en(tx_en),
-        .RX_LINE(gpio_25),
+        //.RX_LINE(gpio_25),
+        .RX_LINE(serial_rxd),
         .DATA(rx_data),
         .DATA_RDY_STROBE(rx_data_ready)
     );
