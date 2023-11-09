@@ -168,6 +168,7 @@ module PGL_Sandpiper_vAlpha_7Seg_Driver
                 SHIFT: begin
                     if(dout_shift_ctr == DOUT_SHIFT_D_W) begin        // Shift new bit out
                         shift_state     <= WAIT;
+                        DOUT            <= 0;
                         RCLK            <= RCLK_COMMIT_2_OUTPUT;
                         brightness_tgt  <= {brightness_buffer[idx][(DIMMING_REG_W - 1):0], 1'b0};  // Divide by 2 by expanding ctr
                         idx             <= idx + 1;

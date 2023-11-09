@@ -53,14 +53,71 @@ module PGL_Sandpiper_vAlpha_7Seg_Driver
 
     initial begin
         en = 0; clr = 0; commit = 0; bright = 0; segment = 0; char_sel = 0;
-        #10;
+        #60;
         bright = 127;
         segment = 8'hA5;
         commit = 1;
-        #30;
+        #60;
         commit = 0;
+        #60;
+        
+        char_sel = 1;
+        bright = 255;
+        segment = 8'h81;
+        commit = 1;
+        #60;
+        commit = 0;
+        #60;
 
-        #30;
+        char_sel = 2;
+        bright = 64;
+        segment = 8'hFF;
+        commit = 1;
+        #60;
+        commit = 0;
+        #60;
+
+        char_sel = 3;
+        bright = 200;
+        segment = 8'h23;
+        commit = 1;
+        #60;
+        commit = 0;
+        #60;
+
+        char_sel = 4;
+        bright = 127;
+        segment = 8'hF3;
+        commit = 1;
+        #60;
+        commit = 0;
+        #60;
+
+        char_sel = 5;
+        bright = 100;
+        segment = 8'hBA;
+        commit = 1;
+        #60;
+        commit = 0;
+        #60;
+
+        char_sel = 6;
+        bright = 200;
+        segment = 8'hAF;
+        commit = 1;
+        #60;
+        commit = 0;
+        #60;
+
+        char_sel = 7;
+        bright = 10;
+        segment = 8'h11;
+        commit = 1;
+        #60;
+        commit = 0;
+        #60;
+
+        #120;
         en = 1;
 
         #10000000;
