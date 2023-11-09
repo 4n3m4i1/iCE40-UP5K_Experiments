@@ -5,8 +5,8 @@ module top
     parameter D_BITS = 8
 )
 (
-    output wire gpio_37,
-    output wire gpio_43
+    output wire gpio_32,
+    output wire gpio_3
 );
 // GPIO 23 DAC_OUT
     wire clk_hf;
@@ -16,11 +16,7 @@ module top
         .CLKHFPU(1'b1),
         .CLKHF(clk_hf)
     );
-<<<<<<< HEAD
     // 48M / 1 = 48M
-=======
-    // 48M / 2 = 24M
->>>>>>> 0911d170bf0831fbddcbdc6e10cf19fd06af7da8
     defparam inthfosc.CLKHF_DIV = "0b01";
 
 
@@ -49,7 +45,7 @@ module top
         .clk(clk_hf),
         .nco_div(nco_divvy),
         .nco_out(nco_dat),
-        .ncoovfsync(gpio_37)     // 37
+        .ncoovfsync(gpio_32)     // 37
     );
 
     /*
@@ -65,7 +61,7 @@ module fods_mod
     (
         .mod_clk(clk_hf),
         .mod_din(nco_dat),
-        .mod_dout(gpio_43)       // 43
+        .mod_dout(gpio_3)       // 43
     );
    
    // reg [7:0]int_cl_lf_div;

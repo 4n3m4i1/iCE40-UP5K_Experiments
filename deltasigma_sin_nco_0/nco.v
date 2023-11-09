@@ -58,7 +58,6 @@ module SIN_NCO
         
         if(nco_clk_div_acc >= nco_div_buffer) begin
             nco_clk_div_acc <= {16{1'b0}};
-<<<<<<< HEAD
             
             bram_addr <= bram_addr + 1;
             bram_rd <= 1'b1;
@@ -72,20 +71,6 @@ module SIN_NCO
         end
 
 /*
-=======
-            bram_addr = bram_addr + 1;
-            /*
-            if(!bram_rd) begin
-                bram_addr = bram_addr + 1;
-                bram_rd = 1'b1;
-            end
-            */
-            //nco_out <= bramo;
-
-            if(!bram_rd) bram_rd_state <= bram_rd_state + 1;
-        end
-        
->>>>>>> 0911d170bf0831fbddcbdc6e10cf19fd06af7da8
         else begin
             case (bram_rd_state)
                 1: begin
@@ -104,11 +89,7 @@ module SIN_NCO
                 end
             endcase
         end
-<<<<<<< HEAD
 */
-=======
-        
->>>>>>> 0911d170bf0831fbddcbdc6e10cf19fd06af7da8
     end
 
     // Bram read state machine

@@ -12,19 +12,19 @@ module fods_mod
 
     assign mod_dout = mod_accum[DATA_W];
 
-
+/*
     dsp_adder dsmodadd(
                         .dsp_clk(mod_clk),
                         .A(mod_din),
                         .carry(mod_dout)
                         );
-
-//    initial begin
+*/
+    initial begin
         //mod_accum = {DATA_W + 1{1'b0}};
-//        mod_accum = 0;
-//    end
+        mod_accum = 0;
+    end
 
-//    always @ (posedge mod_clk) mod_accum <= mod_accum[(DATA_W - 1):0] + mod_din;
+    always @ (posedge mod_clk) mod_accum <= mod_accum[(DATA_W - 1):0] + mod_din;
 
 endmodule
 

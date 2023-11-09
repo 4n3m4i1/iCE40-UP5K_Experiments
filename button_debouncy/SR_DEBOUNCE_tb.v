@@ -20,7 +20,7 @@ module SR_DB
     wire Q;
 
     SR_DB #(
-        .DEBOUNCE_DELAY(0.0005)
+        .DEBOUNCE_DELAY(0.0015)
     ) debouncy (
         .clk(sys_clk),
         .D(BUTTON),
