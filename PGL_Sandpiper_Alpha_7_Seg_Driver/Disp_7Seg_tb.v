@@ -70,7 +70,7 @@ module PGL_Sandpiper_vAlpha_7Seg_Driver
         #60;
 
         char_sel = 2;
-        bright = 64;
+        bright = 0;
         segment = 8'hFF;
         commit = 1;
         #60;
@@ -78,7 +78,7 @@ module PGL_Sandpiper_vAlpha_7Seg_Driver
         #60;
 
         char_sel = 3;
-        bright = 200;
+        bright = 255;
         segment = 8'h23;
         commit = 1;
         #60;
